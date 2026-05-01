@@ -10,25 +10,25 @@
               sequence="10"/>
 
     <menuitem id="menu_hr_hospital_patient"
-              name="Пацієнти"
+              name="Patients"
               parent="menu_hr_hospital_operations"
               action="action_hr_hospital_patient"
               sequence="10"/>
 
     <menuitem id="menu_hr_hospital_doctor"
-              name="Лікарі"
+              name="Doctors"
               parent="menu_hr_hospital_operations"
               action="action_hr_hospital_doctor"
               sequence="20"/>
 
     <menuitem id="menu_hr_hospital_disease"
-              name="Види захворювань"
+              name="Types of diseases"
               parent="menu_hr_hospital_operations"
               action="action_hr_hospital_disease"
               sequence="30"/>
 
     <menuitem id="menu_hr_hospital_visit"
-              name="Візити"
+              name="Visits"
               parent="menu_hr_hospital_operations"
               action="action_hr_hospital_visit"
               sequence="40"/>

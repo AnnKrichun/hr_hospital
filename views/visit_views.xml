@@ -7,7 +7,7 @@
                 <list string="Візити">
                     <field name="visit_date"/>
                     <field name="patient_id"/>
-                    <field name="doctor_id"/>
+                    <field name="personal_doctor_id"/>
                     <field name="disease_id"/>
                 </list>
             </field>
@@ -22,7 +22,7 @@
                         <group>
                             <group>
                                 <field name="patient_id"/>
-                                <field name="doctor_id"/>
+                                <field name="personal_doctor_id"/>
                             </group>
                             <group>
                                 <field name="visit_date"/>
@@ -39,10 +39,26 @@
             </field>
         </record>
 
+        <record id="view_hr_hospital_visit_calendar" model="ir.ui.view">
+            <field name="name">hr.hospital.visit.calendar</field>
+            <field name="model">hr.hospital.visit</field>
+             <field name="arch" type="xml">
+            <calendar string="Графік прийому лікарів"
+                  date_start="planned_date"
+                  color="personal_doctor_id"
+                  mode="month">
+                <field name="patient_id"/>
+                <field name="personal_doctor_id"/>
+                <field name="state"/>
+            </calendar>
+            </field>
+        </record>
+
         <record id="action_hr_hospital_visit" model="ir.actions.act_window">
             <field name="name">Візити</field>
             <field name="res_model">hr.hospital.visit</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">list,calendar,form</field>
+
         </record>
     </data>
 </odoo>

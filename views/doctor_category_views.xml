@@ -1,0 +1,50 @@
+<odoo>
+    <record id="view_hr_hospital_doctor_category_tree" model="ir.ui.view">
+        <field name="name">hr.hospital.doctor.category.list</field>
+        <field name="model">hr.hospital.doctor.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_hospital_doctor_category_form" model="ir.ui.view">
+        <field name="name">hr.hospital.doctor.category.form</field>
+        <field name="model">hr.hospital.doctor.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                    </group>
+                    <notebook>
+                        <page string="Лікарі">
+                            <field name="doctor_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="specialization"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_hospital_doctor_category" model="ir.actions.act_window">
+        <field name="name">Кваліфікації лікарів</field>
+        <field name="res_model">hr.hospital.doctor.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_hr_hospital_doctor_category"
+          name="Qualifications"
+          parent="menu_hr_hospital_root"
+          action="action_hr_hospital_doctor_category"
+          sequence="25"/>
+
+</odoo>

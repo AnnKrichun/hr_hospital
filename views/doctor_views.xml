@@ -1,7 +1,6 @@
 <odoo>
     <data>
 
-
         <record id="view_hr_hospital_doctor_list" model="ir.ui.view">
             <field name="name">hr.hospital.doctor.list</field>
             <field name="model">hr.hospital.doctor</field>
@@ -9,10 +8,14 @@
                 <list string="Лікарі">
                     <field name="name"/>
                     <field name="specialization"/>
+                    <field name="category_id"/>
+                    <field name="is_intern" string="Інтерн"/>
+                    <field name="mentor_id"
+                        invisible="not is_intern"
+                        required="is_intern"/>
                 </list>
             </field>
         </record>
-
 
         <record id="view_hr_hospital_doctor_form" model="ir.ui.view">
             <field name="name">hr.hospital.doctor.form</field>
@@ -21,16 +24,32 @@
                 <form string="Лікар">
                     <sheet>
                         <group>
-                            <group>
+                            <group string="Основна інформація">
                                 <field name="name"/>
                                 <field name="specialization"/>
+                                <field name="category_id"/>
+                                <field name="user_id"/>
                             </group>
+                            <group string="Медичні дані">
+                                <field name="gender"/>
+                                <field name="birthday"/>
+                                <field name="age"/>
+                                <field name="blood_type"/>
+                            </group>
+                        </group>
+
+                        <!-- Спеціальна секція для інтернів (п. 3.4) -->
+                        <group string="Статус та наставництво">
+                            <field name="is_intern"/>
+                            <field name="mentor_id"
+                                   invisible="not is_intern"
+                                   required="is_intern"
+                                   domain="[('is_intern', '=', False), ('id', '!=', id)]"/>
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
-
 
         <record id="action_hr_hospital_doctor" model="ir.actions.act_window">
             <field name="name">Лікарі</field>
@@ -40,3 +59,4 @@
 
     </data>
 </odoo>
+
