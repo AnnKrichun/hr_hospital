@@ -20,7 +20,25 @@
             <field name="model">hr.hospital.patient</field>
             <field name="arch" type="xml">
                 <form string="Пацієнт">
+
+                    <header>
+                        <button name="action_create_new_visit"
+                            string="Записати до лікаря"
+                            type="object"
+                            class="oe_highlight"/>
+                    </header>
+
                     <sheet>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_patient_visits"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+                                <field name="visit_count" string="Візити" widget="statinfo"/>
+                            </button>
+                        </div>
+
                         <div class="oe_title">
                             <h1>
                                 <field name="name" placeholder="ПІБ Пацієнта"/>
@@ -32,6 +50,7 @@
                                 <field name="birthday"/>
                                 <field name="age"/>
                                 <field name="blood_type"/>
+                                <field name="phone" widget="phone"/>
                             </group>
                             <group string="Медична інформація">
                                 <field name="personal_doctor_id"/>
@@ -40,6 +59,7 @@
                         </group>
 
                         <notebook>
+
                             <page string="Історія персональних лікарів" name="doctor_history">
                                 <field name="doctor_history_ids">
                                     <list editable="bottom" create="false" edit="false">
@@ -48,17 +68,57 @@
                                     </list>
                                 </field>
                             </page>
+
+                            <page string="Історія діагнозів" name="diagnosis_history">
+                                <field name="visit_ids">
+                                    <list decoration-info="state == 'planned'" decoration-success="state == 'done'">
+                                        <field name="visit_date"/>
+                                        <field name="personal_doctor_id"/>
+                                        <field name="disease_id" string="Діагноз"/>
+                                        <field name="summary"/>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                </field>
+                            </page>
+
                         </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
 
+        <record id="view_hr_hospital_patient_search" model="ir.ui.view">
+            <field name="name">hr.hospital.patient.search</field>
+            <field name="model">hr.hospital.patient</field>
+            <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="phone"/>
+
+                <separator/>
+
+                <filter string="Чоловіки" name="gender_male" domain="[('gender', '=', 'male')]"/>
+                <filter string="Жінки" name="gender_female" domain="[('gender', '=', 'female')]"/>
+
+                <group>
+                    <filter string="Стать" name="group_by_gender" context="{'group_by': 'gender'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+
         <record id="action_hr_hospital_patient" model="ir.actions.act_window">
             <field name="name">Пацієнти</field>
             <field name="res_model">hr.hospital.patient</field>
             <field name="view_mode">list,form</field>
         </record>
+
+        <menuitem id="menu_hr_hospital_patient"
+          name="Patients"
+          parent="hr_hospital.menu_hr_hospital_operations"
+          action="action_hr_hospital_patient"
+          sequence="10"/>
 
     </data>
 </odoo>

@@ -1,0 +1,17 @@
+<odoo>
+    <data noupdate="1">
+        <record id="doctor_intern_1" model="hr.hospital.doctor">
+            <field name="name">Д-р Ерік Форман</field>
+            <field name="specialization">Неврологія</field>
+            <field name="category_id" ref="hr_hospital.doctor_category_intern"/>
+            <field name="mentor_id" ref="hr_hospital.doctor_1"/>
+        </record>
+
+        <record id="doctor_intern_2" model="hr.hospital.doctor">
+            <field name="name">Д-р Роберт Чейз</field>
+            <field name="specialization">Інтенсивна терапія</field>
+            <field name="category_id" ref="hr_hospital.doctor_category_intern"/>
+            <field name="mentor_id" ref="hr_hospital.doctor_1"/>
+        </record>
+    </data>
+</odoo>

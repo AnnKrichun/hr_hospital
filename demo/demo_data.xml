@@ -41,7 +41,6 @@
         <field name="personal_doctor_id" ref="doctor_1"/>
     </record>
 
-    <!-- Візити (6 записів) -->
     <record id="visit_1" model="hr.hospital.visit">
         <field name="patient_id" ref="patient_1"/>
         <field name="personal_doctor_id" ref="doctor_1"/>
@@ -89,5 +88,38 @@
         <field name="planned_date" eval="(datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d 15:00:00')"/>
         <field name="state">planned</field>
     </record>
+
+    <record id="visit_demo_1" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_1"/>
+        <field name="personal_doctor_id" ref="doctor_1"/>
+        <field name="disease_id" ref="disease_item_covid"/>
+        <field name="planned_date" eval="(datetime.now() - relativedelta(days=5)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="visit_date" eval="(datetime.now() - relativedelta(days=5)).strftime('%Y-%m-%d 10:15:00')"/>
+        <field name="state">done</field>
+        <field name="summary">Пацієнт скаржився на температуру. Призначено спокій.</field>
+    </record>
+
+    <record id="visit_demo_2" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_2"/>
+        <field name="personal_doctor_id" ref="doctor_2"/>
+        <field name="planned_date" eval="datetime.now().strftime('%Y-%m-%d 14:00:00')"/>
+        <field name="state">planned</field>
+    </record>
+
+    <record id="visit_demo_3" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_1"/>
+        <field name="personal_doctor_id" ref="doctor_2"/>
+        <field name="planned_date" eval="(datetime.now() + relativedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+        <field name="state">planned</field>
+    </record>
+
+    <record id="visit_demo_4" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_3"/>
+        <field name="personal_doctor_id" ref="doctor_1"/>
+        <field name="planned_date" eval="(datetime.now() - relativedelta(days=2)).strftime('%Y-%m-%d 16:30:00')"/>
+        <field name="state">cancelled</field>
+        <field name="treatment_notes">Пацієнт не з'явився на прийом.</field>
+    </record>
+
     </data>
  </odoo>

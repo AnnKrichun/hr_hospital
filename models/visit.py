@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 class HospitalVisit(models.Model):
     _name = 'hr.hospital.visit'
     _description = 'Patient Visit'
+    _rec_name = 'patient_id'
 
     name = fields.Char(
         string='Номер візиту',
@@ -26,7 +27,7 @@ class HospitalVisit(models.Model):
 
     visit_date = fields.Datetime(
         string='Дата та час візиту (факт)',
-        default=fields.Datetime.now
+
     )
 
     personal_doctor_id = fields.Many2one(
@@ -56,13 +57,27 @@ class HospitalVisit(models.Model):
 
     active = fields.Boolean(default=True)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('hr.hospital.visit') or 'New'
+            if vals.get('state') == 'done' and not vals.get('visit_date'):
+                vals['visit_date'] = fields.Datetime.now()
+        return super(HospitalVisit, self).create(vals_list)
+
     def write(self, vals):
+        if vals.get('state') == 'done':
+            for rec in self:
+                if not rec.visit_date and 'visit_date' not in vals:
+                    rec.visit_date = fields.Datetime.now()
+
         for rec in self:
             if rec.state == 'done':
-                forbidden_fields = ['planned_date', 'visit_date', 'personal_doctor_id', 'patient_id']
-                if any(field in vals for field in forbidden_fields):
-                    raise ValidationError("Не можна змінювати дату, лікаря або пацієнта у завершеному візиті!")
-        return super(HospitalVisit, self).write(vals)
+                forbidden = ['planned_date', 'visit_date', 'personal_doctor_id', 'patient_id']
+                if any(field in vals for field in forbidden):
+                    raise ValidationError("Не можна змінювати основні дані у завершеному візиті!")
+        return super().write(vals)
 
     def unlink(self):
         for rec in self:
@@ -75,3 +90,20 @@ class HospitalVisit(models.Model):
         for rec in self:
             if rec.state == 'done' and not rec.active:
                 raise ValidationError("Заборонено архівувати завершені візити!")
+
+    def action_done(self):
+        for rec in self:
+            rec.state = 'done'
+    def action_done(self):
+        for rec in self:
+            rec.state = 'done'
+            if not rec.visit_date:
+                rec.visit_date = fields.Datetime.now()
+
+    def action_cancel(self):
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def action_draft(self):
+        for rec in self:
+            rec.state = 'planned'

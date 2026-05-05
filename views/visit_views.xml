@@ -4,7 +4,7 @@
             <field name="name">hr.hospital.visit.list</field>
             <field name="model">hr.hospital.visit</field>
             <field name="arch" type="xml">
-                <list string="Візити">
+                <list string="Візити" decoration-info="state == 'planned'" decoration-success="state == 'done'" decoration-muted="state == 'cancelled'">
                     <field name="visit_date"/>
                     <field name="patient_id"/>
                     <field name="personal_doctor_id"/>
@@ -18,21 +18,46 @@
             <field name="model">hr.hospital.visit</field>
             <field name="arch" type="xml">
                 <form string="Візит">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="planned,done,cancelled" options="{'clickable': '1'}"/>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+
                         <group>
-                            <group>
-                                <field name="patient_id"/>
-                                <field name="personal_doctor_id"/>
-                            </group>
-                            <group>
-                                <field name="visit_date"/>
-                                <field name="disease_id"/>
-                            </group>
+
+                        <group string="Основна інформація">
+                        <field name="patient_id" readonly="state == 'done'"/>
+                        <field name="personal_doctor_id" readonly="state == 'done'"/>
+                        <field name="disease_id" readonly="state == 'done'"
+                               placeholder="Оберіть діагноз..."/>
                         </group>
+
+                        <group string="Час та стан">
+                            <field name="planned_date" readonly="state == 'done'"/>
+                            <field name="visit_date" readonly="state == 'done'"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+
+                        </group>
+
                         <notebook>
-                            <page string="Нотатки лікаря">
-                                <field name="treatment_notes"/>
-                            </page>
+                        <page string="Епікриз" name="page_summary">
+                            <group>
+                                <separator string="Медичний висновок (Summary)"/>
+                                <field name="summary" nolabel="1" placeholder="Опишіть поточний стан пацієнта, скарги та результати огляду..."/>
+                            </group>
+                        </page>
+                        <page string="Лікування та поради" name="page_treatment">
+                            <group>
+                                <separator string="План лікування та рекомендації"/>
+                                <field name="treatment_notes" nolabel="1" placeholder="Вкажіть необхідні ліки, процедури або режим дня..."/>
+                            </group>
+                        </page>
                         </notebook>
                     </sheet>
                 </form>
@@ -42,23 +67,105 @@
         <record id="view_hr_hospital_visit_calendar" model="ir.ui.view">
             <field name="name">hr.hospital.visit.calendar</field>
             <field name="model">hr.hospital.visit</field>
-             <field name="arch" type="xml">
-            <calendar string="Графік прийому лікарів"
-                  date_start="planned_date"
+            <field name="arch" type="xml">
+
+                <calendar date_start="planned_date"
                   color="personal_doctor_id"
-                  mode="month">
-                <field name="patient_id"/>
-                <field name="personal_doctor_id"/>
-                <field name="state"/>
-            </calendar>
+                  mode="month"
+                  quick_create="0"
+                  event_open_popup="true">
+                    <field name="patient_id"/>
+                    <field name="personal_doctor_id" filters="1"/>
+                    <field name="state" filters="1"/>
+                </calendar>
+
             </field>
+        </record>
+
+        <record id="view_hr_hospital_visit_search" model="ir.ui.view">
+            <field name="name">hr.hospital.visit.search</field>
+            <field name="model">hr.hospital.visit</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="patient_id"/>
+                    <field name="personal_doctor_id"/>
+                    <field name="disease_id"/>
+
+                    <filter string="Заплановано" name="planned" domain="[('state', '=', 'planned')]"/>
+                    <filter string="Завершено" name="done" domain="[('state', '=', 'done')]"/>
+
+                    <group>
+                        <filter string="Статус" name="by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Лікар" name="by_doctor" context="{'group_by': 'personal_doctor_id'}"/>
+                    </group>
+
+                    <filter string="Цей місяць" name="this_month"
+                    domain="[('planned_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="view_hr_hospital_visit_pivot" model="ir.ui.view">
+        <field name="name">hr.hospital.visit.pivot</field>
+        <field name="model">hr.hospital.visit</field>
+        <field name="arch" type="xml">
+            <pivot string="Зведена таблиця візитів" sample="1">
+                <field name="personal_doctor_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
         </record>
 
         <record id="action_hr_hospital_visit" model="ir.actions.act_window">
             <field name="name">Візити</field>
             <field name="res_model">hr.hospital.visit</field>
-            <field name="view_mode">list,calendar,form</field>
-
+            <field name="view_mode">calendar,list,pivot,form</field>
+            <field name="context">{'search_default_this_month': 1}</field>
         </record>
+
+        <menuitem id="menu_hr_hospital_visit"
+              name="Visits"
+              parent="menu_hr_hospital_operations"
+              action="action_hr_hospital_visit"
+              sequence="40"/>
+
+        <record id="view_hr_hospital_visit_diagnosis_pivot" model="ir.ui.view">
+            <field name="name">hr.hospital.visit.diagnosis.pivot</field>
+            <field name="model">hr.hospital.visit</field>
+            <field name="arch" type="xml">
+                <pivot string="Аналіз діагнозів">
+                    <field name="disease_id" type="row"/>
+
+                    <field name="visit_date" interval="year" type="col"/>
+                    <field name="visit_date" interval="month" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_hr_hospital_visit_graph" model="ir.ui.view">
+            <field name="name">hr.hospital.visit.graph</field>
+            <field name="model">hr.hospital.visit</field>
+            <field name="arch" type="xml">
+                <graph string="Діаграма захворюваності" type="bar" stacked="1" sample="1">
+                    <field name="visit_date" interval="month"/>
+                    <field name="disease_id"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="action_hr_hospital_diagnosis_analysis" model="ir.actions.act_window">
+            <field name="name">Аналіз захворюваності</field>
+            <field name="res_model">hr.hospital.visit</field>
+            <field name="view_mode">graph,pivot</field>
+            <field name="view_id" ref="view_hr_hospital_visit_graph"/>
+        </record>
+
+        <menuitem id="menu_hr_hospital_diagnosis_analysis"
+          name="Diagnostics analytics"
+          parent="menu_hr_hospital_operations"
+          action="action_hr_hospital_diagnosis_analysis"
+          sequence="50"/>
+
     </data>
 </odoo>
