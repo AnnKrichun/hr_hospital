@@ -92,8 +92,8 @@
             <field name="model">hr.hospital.patient</field>
             <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="phone"/>
+                <field name="name" string="Пацієнт" filter_domain="['|', ('name', 'ilike', self), ('insurance_number', 'ilike', self)]"/>
+                <field name="phone" string="Телефон"/>
 
                 <separator/>
 

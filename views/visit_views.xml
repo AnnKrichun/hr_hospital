@@ -22,6 +22,18 @@
                         <field name="state" widget="statusbar" statusbar_visible="planned,done,cancelled" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(action_hr_hospital_visit)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-stethoscope"
+                                context="{'search_default_disease_id': disease_id, 'default_disease_id': disease_id}">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Схожі діагнози</span>
+                            </div>
+                            </button>
+                        </div>
+
                         <div class="oe_title">
                             <h1>
                                 <field name="name"/>
@@ -91,6 +103,19 @@
                     <field name="personal_doctor_id"/>
                     <field name="disease_id"/>
 
+                    <searchpanel>
+                        <field name="personal_doctor_id"
+                            string="Лікар"
+                            icon="fa-user-md"
+                            enable_counters="1"
+                            select="multi"/>
+                        <field name="disease_id"
+                            string="Діагноз"
+                            icon="fa-heartbeat"
+                            enable_counters="1"
+                            select="multi"/>
+                    </searchpanel>
+
                     <filter string="Заплановано" name="planned" domain="[('state', '=', 'planned')]"/>
                     <filter string="Завершено" name="done" domain="[('state', '=', 'done')]"/>
 
@@ -120,7 +145,7 @@
         <record id="action_hr_hospital_visit" model="ir.actions.act_window">
             <field name="name">Візити</field>
             <field name="res_model">hr.hospital.visit</field>
-            <field name="view_mode">calendar,list,pivot,form</field>
+            <field name="view_mode">calendar,list,graph,pivot,form</field>
             <field name="context">{'search_default_this_month': 1}</field>
         </record>
 
@@ -147,7 +172,7 @@
             <field name="name">hr.hospital.visit.graph</field>
             <field name="model">hr.hospital.visit</field>
             <field name="arch" type="xml">
-                <graph string="Діаграма захворюваності" type="bar" stacked="1" sample="1">
+                <graph string="Аналіз візитів по місяцях" type="bar" stacked="1" sample="1">
                     <field name="visit_date" interval="month"/>
                     <field name="disease_id"/>
                 </graph>

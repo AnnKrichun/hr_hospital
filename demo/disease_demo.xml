@@ -4,16 +4,8 @@
             <field name="name">Грип (Influenza)</field>
         </record>
 
-        <record id="disease_covid" model="hr.hospital.disease">
-            <field name="name">COVID-19</field>
-        </record>
-
         <record id="disease_bronchitis" model="hr.hospital.disease">
             <field name="name">Гострий бронхіт</field>
-        </record>
-
-        <record id="disease_hypertension" model="hr.hospital.disease">
-            <field name="name">Гіпертонія</field>
         </record>
 
         <record id="disease_gastritis" model="hr.hospital.disease">
@@ -23,5 +15,34 @@
         <record id="disease_diabetes" model="hr.hospital.disease">
             <field name="name">Цукровий діабет 2 типу</field>
         </record>
+
+        <record id="cat_infectious" model="hr.hospital.disease">
+            <field name="name">Інфекційні захворювання</field>
+        </record>
+
+        <record id="cat_cardiology" model="hr.hospital.disease">
+            <field name="name">Кардіологія</field>
+        </record>
+
+        <record id="disease_flu" model="hr.hospital.disease">
+            <field name="name">Грип А</field>
+            <field name="parent_id" ref="cat_infectious"/>
+        </record>
+
+        <record id="disease_covid" model="hr.hospital.disease">
+            <field name="name">COVID-19</field>
+            <field name="parent_id" ref="cat_infectious"/>
+        </record>
+
+        <record id="disease_hypertension" model="hr.hospital.disease">
+            <field name="name">Гіпертонія</field>
+            <field name="parent_id" ref="cat_cardiology"/>
+        </record>
+
+        <record id="disease_arrhythmia" model="hr.hospital.disease">
+            <field name="name">Аритмія</field>
+            <field name="parent_id" ref="cat_cardiology"/>
+        </record>
+
     </data>
 </odoo>

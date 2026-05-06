@@ -13,7 +13,6 @@ class VisitReportWizard(models.TransientModel):
 
     @api.model
     def default_get(self, fields_list):
-        """ Автозаповнення лікарів або пацієнтів залежно від контексту (п. 5.4) """
         res = super().default_get(fields_list)
         active_model = self.env.context.get('active_model')
         active_ids = self.env.context.get('active_ids')
@@ -25,7 +24,6 @@ class VisitReportWizard(models.TransientModel):
         return res
 
     def action_generate_report(self):
-        """ Формування результату пошуку (п. 5.5) """
         domain = []
         if self.doctor_ids:
             domain.append(('personal_doctor_id', 'in', self.doctor_ids.ids))

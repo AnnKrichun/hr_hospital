@@ -25,18 +25,20 @@
     </record>
 
     <record id="action_visit_report_from_patient" model="ir.actions.act_window">
-        <field name="name">Сформувати звіт по візитах</field>
+        <field name="name">Звіт по візитах</field>
         <field name="res_model">visit.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_model_id" ref="model_hr_hospital_patient"/>
+        <field name="binding_type">report</field>
     </record>
 
     <record id="action_visit_report_from_doctor" model="ir.actions.act_window">
-        <field name="name">Сформувати звіт по візитах</field>
+        <field name="name">Звіт по візитах</field>
         <field name="res_model">visit.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_model_id" ref="model_hr_hospital_doctor"/>
+        <field name="binding_type">report</field>
     </record>
 </odoo>

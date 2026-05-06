@@ -21,7 +21,7 @@
         'views/visit_views.xml',
         'wizard/reassign_doctor_wizard_views.xml',
         'wizard/visit_report_wizard_views.xml',
-
+        'wizard/disease_report_wizard_view.xml',
     ],
     'demo': [
     ],

@@ -14,6 +14,7 @@
                        string="Категорії"
                        icon="fa-folder"
                        enable_counters="1"
+                       hierarchical="1"
                        expand="1"/>
             </searchpanel>
             </search>

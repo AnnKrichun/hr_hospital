@@ -9,10 +9,8 @@ class MassReassignDoctorWizard(models.TransientModel):
     change_date = fields.Date(string='Дата зміни', default=fields.Date.today)
 
     def action_reassign(self):
-        # Отримуємо ID пацієнтів, які були виділені у списку
         patient_ids = self.env.context.get('active_ids')
         patients = self.env['hr.hospital.patient'].browse(patient_ids)
 
-        # Оновлюємо лікаря для обраних пацієнтів
         patients.write({'personal_doctor_id': self.new_doctor_id.id})
         return {'type': 'ir.actions.act_window_close'}

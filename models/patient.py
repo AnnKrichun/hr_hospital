@@ -5,7 +5,7 @@ class HospitalPatient(models.Model):
     _name = 'hr.hospital.patient'
     _inherit = ['hr.hospital.medic.info']
     _description = 'Patient'
-    _rec_name = 'name' #без нього в календарі не показувало прізвище пацієнта в візитах
+    _rec_name = 'name'
     _rec_names_search = ['name']
 
     phone = fields.Char(string='Телефон', help="Контактний номер пацієнта")

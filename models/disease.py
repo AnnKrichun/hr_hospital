@@ -15,7 +15,6 @@ class HospitalDisease(models.Model):
     parent_id = fields.Many2one('hr.hospital.disease', string='Батьківська категорія', ondelete='cascade', index=True)
     parent_path = fields.Char(index=True)
 
-    # Додано recursive=True (обов'язково для Odoo 19)
     display_name = fields.Char(
         string='Повна назва',
         compute='_compute_display_name',

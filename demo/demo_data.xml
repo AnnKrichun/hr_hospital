@@ -121,5 +121,21 @@
         <field name="treatment_notes">Пацієнт не з'явився на прийом.</field>
     </record>
 
+    <record id="visit_demo_5" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_1"/>
+        <field name="personal_doctor_id" ref="doctor_2"/>
+        <field name="planned_date" eval="(datetime.now() - relativedelta(days=3)).strftime('%Y-%m-%d 16:30:00')"/>
+        <field name="state">done</field>
+        <field name="treatment_notes">Пацієнт скаржиться на біль у животі.</field>
+    </record>
+
+    <record id="visit_demo_6" model="hr.hospital.visit">
+        <field name="patient_id" ref="patient_3"/>
+        <field name="personal_doctor_id" ref="doctor_3"/>
+        <field name="planned_date" eval="(datetime.now() - relativedelta(days=2)).strftime('%Y-%m-%d 16:30:00')"/>
+        <field name="state">done</field>
+        <field name="treatment_notes">Пацієнт скаржиться на головний біль.</field>
+    </record>
+
     </data>
  </odoo>
