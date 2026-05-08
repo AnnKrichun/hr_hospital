@@ -13,7 +13,14 @@
             </field>
         </record>
 
-        <record id="view_hr_hospital_visit_form" model="ir.ui.view">
+        <record id="action_hr_hospital_visit" model="ir.actions.act_window">
+            <field name="name">Візити</field>
+            <field name="res_model">hr.hospital.visit</field>
+            <field name="view_mode">calendar,list,graph,pivot,form</field>
+            <field name="context">{'search_default_this_month': 1}</field>
+        </record>
+
+       <record id="view_hr_hospital_visit_form" model="ir.ui.view">
             <field name="name">hr.hospital.visit.form</field>
             <field name="model">hr.hospital.visit</field>
             <field name="arch" type="xml">
@@ -142,12 +149,6 @@
         </field>
         </record>
 
-        <record id="action_hr_hospital_visit" model="ir.actions.act_window">
-            <field name="name">Візити</field>
-            <field name="res_model">hr.hospital.visit</field>
-            <field name="view_mode">calendar,list,graph,pivot,form</field>
-            <field name="context">{'search_default_this_month': 1}</field>
-        </record>
 
         <menuitem id="menu_hr_hospital_visit"
               name="Visits"
