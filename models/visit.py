@@ -1,64 +1,72 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 class HospitalVisit(models.Model):
+    """
+    Model representing patient visits to doctors.
+    Includes validation for finished visits and automatic sequencing.
+    """
     _name = 'hr.hospital.visit'
     _description = 'Patient Visit'
     _rec_name = 'patient_id'
 
     name = fields.Char(
-        string='Номер візиту',
+        string='Visit Number',
         readonly=True,
         copy=False,
         default='New'
     )
 
     state = fields.Selection([
-        ('planned', 'Заплановано'),
-        ('done', 'Завершено'),
-        ('cancelled', 'Скасовано')
-    ], string='Статус візиту', default='planned', required=True)
+        ('planned', 'Planned'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='planned', required=True, tracking=True)
 
     planned_date = fields.Datetime(
-        string='Запланована дата та час',
+        string='Planned Date',
         required=True,
-        help="Для відображення графіку прийому лікарів"
+        help="Scheduled date and time for the doctor's appointment"
     )
 
     visit_date = fields.Datetime(
-        string='Дата та час візиту (факт)',
-
+        string='Actual Visit Date',
+        help="Actual date and time when the visit occurred"
     )
 
     personal_doctor_id = fields.Many2one(
         'hr.hospital.doctor',
-        string='Лікар',
-        required=True
+        string='Doctor',
+        required=True,
+        tracking=True
     )
 
     patient_id = fields.Many2one(
         'hr.hospital.patient',
-        string='Пацієнт',
-        required=True
+        string='Patient',
+        required=True,
+        tracking=True
     )
 
     disease_id = fields.Many2one(
         'hr.hospital.disease',
-        string='Хвороба'
+        string='Disease'
     )
 
     summary = fields.Html(
-        string='Епікриз / Summary'
+        string='Summary',
+        help="Final diagnosis or medical conclusion"
     )
 
     treatment_notes = fields.Text(
-        string='Рекомендації щодо лікування'
+        string='Treatment Recommendations'
     )
 
     active = fields.Boolean(default=True)
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Generates visit number and sets actual date if created as 'done'."""
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('hr.hospital.visit') or 'New'
@@ -67,6 +75,7 @@ class HospitalVisit(models.Model):
         return super(HospitalVisit, self).create(vals_list)
 
     def write(self, vals):
+        """Prevents modifying critical data in completed visits."""
         if vals.get('state') == 'done':
             for rec in self:
                 if not rec.visit_date and 'visit_date' not in vals:
@@ -76,34 +85,34 @@ class HospitalVisit(models.Model):
             if rec.state == 'done':
                 forbidden = ['planned_date', 'visit_date', 'personal_doctor_id', 'patient_id']
                 if any(field in vals for field in forbidden):
-                    raise ValidationError("Не можна змінювати основні дані у завершеному візиті!")
+                    raise ValidationError(_("You cannot modify core data in a completed visit!"))
         return super().write(vals)
 
     def unlink(self):
+        """Restricts deletion of completed visits."""
         for rec in self:
-           if rec.state == 'done':
-               raise ValidationError("Заборонено видаляти завершені візити!")
+            if rec.state == 'done':
+                raise ValidationError(_("Deletion of completed visits is prohibited!"))
         return super(HospitalVisit, self).unlink()
 
     @api.constrains('active')
     def _check_archive_done(self):
+        """Prevents archiving visits that are already finished."""
         for rec in self:
             if rec.state == 'done' and not rec.active:
-                raise ValidationError("Заборонено архівувати завершені візити!")
+                raise ValidationError(_("Archiving of completed visits is prohibited!"))
 
     def action_done(self):
-        for rec in self:
-            rec.state = 'done'
-    def action_done(self):
+        """Sets visit status to 'Done' and records the actual timestamp."""
         for rec in self:
             rec.state = 'done'
             if not rec.visit_date:
                 rec.visit_date = fields.Datetime.now()
 
     def action_cancel(self):
-        for rec in self:
-            rec.state = 'cancelled'
+        """Sets visit status to 'Cancelled'."""
+        self.write({'state': 'cancelled'})
 
     def action_draft(self):
-        for rec in self:
-            rec.state = 'planned'
+        """Resets visit to 'Planned' status."""
+        self.write({'state': 'planned'})

@@ -8,15 +8,17 @@ class HospitalDisease(models.Model):
     _parent_store = True
     _rec_name = 'display_name'
 
-    name = fields.Char(string='Назва захворювання', required=True)
-    description = fields.Text(string='Опис')
-    active = fields.Boolean(default=True, string='Активно')
+    name = fields.Char(string='Disease Name', required=True,
+        help="Enter the name of the disease")
+    description = fields.Text(string='Description',
+        help="Full description of the disease")
+    active = fields.Boolean(default=True, string='Active')
 
-    parent_id = fields.Many2one('hr.hospital.disease', string='Батьківська категорія', ondelete='cascade', index=True)
+    parent_id = fields.Many2one('hr.hospital.disease', string='Parent Category', ondelete='cascade', index=True)
     parent_path = fields.Char(index=True)
 
     display_name = fields.Char(
-        string='Повна назва',
+        string='Full Name',
         compute='_compute_display_name',
         recursive=True,
         store=True
@@ -33,4 +35,4 @@ class HospitalDisease(models.Model):
     @api.constrains('parent_id')
     def _check_hierarchy(self):
         if self._has_cycle():
-            raise ValidationError('Помилка! Не можна створювати циклічну ієрархію.')
+            raise ValidationError('Error! You cannot create a recursive hierarchy.')

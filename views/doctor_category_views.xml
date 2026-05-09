@@ -1,27 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_hr_hospital_doctor_category_tree" model="ir.ui.view">
+
+    <!-- List View -->
+    <record id="view_hr_hospital_doctor_category_list" model="ir.ui.view">
         <field name="name">hr.hospital.doctor.category.list</field>
         <field name="model">hr.hospital.doctor.category</field>
         <field name="arch" type="xml">
-            <list editable="bottom">
+            <list editable="bottom" string="Doctor Categories">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </list>
         </field>
     </record>
 
+    <!-- Form View -->
     <record id="view_hr_hospital_doctor_category_form" model="ir.ui.view">
         <field name="name">hr.hospital.doctor.category.form</field>
         <field name="model">hr.hospital.doctor.category</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Doctor Category">
                 <sheet>
                     <group>
-                        <field name="name"/>
+                        <field name="name" placeholder="e.g. Intern, Specialist..."/>
                         <field name="sequence"/>
                     </group>
                     <notebook>
-                        <page string="Лікарі">
+                        <page string="Doctors" name="doctors_list">
                             <field name="doctor_ids" readonly="1">
                                 <list>
                                     <field name="name"/>
@@ -35,16 +39,23 @@
         </field>
     </record>
 
+    <!-- Action -->
     <record id="action_hr_hospital_doctor_category" model="ir.actions.act_window">
-        <field name="name">Кваліфікації лікарів</field>
+        <field name="name">Doctor Qualifications</field>
         <field name="res_model">hr.hospital.doctor.category</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage doctor qualification levels
+            </p>
+        </field>
     </record>
 
+    <!-- Menu Item -->
     <menuitem id="menu_hr_hospital_doctor_category"
-          name="Qualifications"
-          parent="menu_hr_hospital_root"
-          action="action_hr_hospital_doctor_category"
-          sequence="25"/>
+              name="Qualifications"
+              parent="menu_hr_hospital_root"
+              action="action_hr_hospital_doctor_category"
+              sequence="25"/>
 
 </odoo>

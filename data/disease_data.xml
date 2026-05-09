@@ -1,29 +1,33 @@
 <odoo>
     <data noupdate="1">
 
+        <!-- Root category: Infectious Diseases -->
         <record id="disease_root_infectious" model="hr.hospital.disease">
-            <field name="name">Інфекційні захворювання</field>
+            <field name="name">Infectious Diseases</field>
         </record>
 
+        <!-- Sub category: Viral Infections -->
         <record id="disease_sub_viral" model="hr.hospital.disease">
-            <field name="name">Вірусні інфекції</field>
+            <field name="name">Viral Infections</field>
             <field name="parent_id" ref="disease_root_infectious"/>
         </record>
 
+        <!-- Disease: COVID-19 -->
         <record id="disease_item_covid" model="hr.hospital.disease">
             <field name="name">COVID-19</field>
             <field name="parent_id" ref="disease_sub_viral"/>
         </record>
 
+        <!-- Root category: Respiratory Diseases -->
         <record id="disease_root_respiratory" model="hr.hospital.disease">
-            <field name="name">Захворювання дихальних шляхів</field>
+            <field name="name">Respiratory Diseases</field>
         </record>
 
+        <!-- Disease: Pneumonia -->
         <record id="disease_sub_pneumonia" model="hr.hospital.disease">
-            <field name="name">Пневмонія</field>
+            <field name="name">Pneumonia</field>
             <field name="parent_id" ref="disease_root_respiratory"/>
         </record>
+
     </data>
 </odoo>
-
-

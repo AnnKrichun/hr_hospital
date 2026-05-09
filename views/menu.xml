@@ -1,13 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <!-- 1. Головне меню додатка -->
     <menuitem id="menu_hr_hospital_root"
               name="Hospital"
-              sequence="10"
-              web_icon="hr_hospital,static/description/icon.png"/>
+              sequence="10"/>
+
+    <menuitem id="menu_hr_hospital_doctors"
+              name="Doctors"
+              parent="menu_hr_hospital_root"
+              action="action_hr_hospital_doctor"
+              sequence="10"/>
+
+    <menuitem id="menu_hr_hospital_patients"
+              name="Patients"
+              parent="menu_hr_hospital_root"
+              action="action_hr_hospital_patient"
+              sequence="20"/>
+
+    <menuitem id="menu_hr_hospital_visits"
+              name="Visits"
+              parent="menu_hr_hospital_root"
+              action="action_hr_hospital_visit"
+              sequence="30"/>
 
     <menuitem id="menu_hr_hospital_operations"
               name="Operations"
               parent="menu_hr_hospital_root"
+              sequence="40"/>
+
+    <menuitem id="menu_hr_hospital_diagnosis_analysis"
+              name="Analytics"
+              parent="menu_hr_hospital_operations"
+              action="action_hr_hospital_diagnosis_analysis"
               sequence="10"/>
 
+    <menuitem id="menu_hr_hospital_configurations"
+              name="Configuration"
+              parent="menu_hr_hospital_root"
+              sequence="100"/>
 </odoo>
+

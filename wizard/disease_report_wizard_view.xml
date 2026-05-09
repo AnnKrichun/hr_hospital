@@ -1,33 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_disease_report_wizard_form" model="ir.ui.view">
         <field name="name">disease.report.wizard.form</field>
         <field name="model">disease.report.wizard</field>
         <field name="arch" type="xml">
-            <form string="Параметри звіту">
+            <form string="Report Parameters">
                 <group>
-                    <group string="Період">
+                    <group string="Period">
                         <field name="date_from"/>
                         <field name="date_to"/>
                     </group>
-                    <group string="Фільтри">
-                        <field name="doctor_ids" widget="many2many_tags" placeholder="Всі лікарі..."/>
-                        <field name="disease_ids" widget="many2many_tags" placeholder="Всі хвороби..."/>
+                    <group string="Filters">
+                        <field name="doctor_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True}"
+                               placeholder="All doctors..."/>
+                        <field name="disease_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True}"
+                               placeholder="All diseases..."/>
                     </group>
                 </group>
                 <footer>
-                    <button name="action_generate_report" string="Сформувати" type="object" class="btn-primary"/>
-                    <button string="Скасувати" class="btn-secondary" special="cancel"/>
+                    <button name="action_generate_report"
+                            string="Generate Report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
-    <record id="action_disease_report_wizard_doctor" model="ir.actions.act_window">
-        <field name="name">Звіт по хворобах</field>
+    <record id="action_disease_report_wizard" model="ir.actions.act_window">
+        <field name="name">Disease Analysis Report</field>
         <field name="res_model">disease.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="binding_model_id" ref="model_hr_hospital_doctor"/>
+    </record>
+
+    <!-- Binding to the Doctor model Action Menu -->
+    <record id="action_disease_report_wizard_binding" model="ir.actions.act_window">
+        <field name="name">Disease Report</field>
+        <field name="res_model">disease.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="hr_hospital.model_hr_hospital_doctor"/>
         <field name="binding_type">report</field>
     </record>
 </odoo>

@@ -1,31 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="disease_flu" model="hr.hospital.disease">
-            <field name="name">Грип (Influenza)</field>
-        </record>
 
-        <record id="disease_bronchitis" model="hr.hospital.disease">
-            <field name="name">Гострий бронхіт</field>
-        </record>
-
-        <record id="disease_gastritis" model="hr.hospital.disease">
-            <field name="name">Гастрит</field>
-        </record>
-
-        <record id="disease_diabetes" model="hr.hospital.disease">
-            <field name="name">Цукровий діабет 2 типу</field>
-        </record>
-
+        <!-- Root Categories -->
         <record id="cat_infectious" model="hr.hospital.disease">
-            <field name="name">Інфекційні захворювання</field>
+            <field name="name">Infectious Diseases</field>
         </record>
 
         <record id="cat_cardiology" model="hr.hospital.disease">
-            <field name="name">Кардіологія</field>
+            <field name="name">Cardiology</field>
         </record>
 
+        <!-- Infectious Diseases Sub-items -->
         <record id="disease_flu" model="hr.hospital.disease">
-            <field name="name">Грип А</field>
+            <field name="name">Influenza (Flu)</field>
             <field name="parent_id" ref="cat_infectious"/>
         </record>
 
@@ -34,14 +22,28 @@
             <field name="parent_id" ref="cat_infectious"/>
         </record>
 
+        <!-- Cardiology Sub-items -->
         <record id="disease_hypertension" model="hr.hospital.disease">
-            <field name="name">Гіпертонія</field>
+            <field name="name">Hypertension</field>
             <field name="parent_id" ref="cat_cardiology"/>
         </record>
 
         <record id="disease_arrhythmia" model="hr.hospital.disease">
-            <field name="name">Аритмія</field>
+            <field name="name">Arrhythmia</field>
             <field name="parent_id" ref="cat_cardiology"/>
+        </record>
+
+        <!-- Other Diseases -->
+        <record id="disease_bronchitis" model="hr.hospital.disease">
+            <field name="name">Acute Bronchitis</field>
+        </record>
+
+        <record id="disease_gastritis" model="hr.hospital.disease">
+            <field name="name">Gastritis</field>
+        </record>
+
+        <record id="disease_diabetes" model="hr.hospital.disease">
+            <field name="name">Type 2 Diabetes</field>
         </record>
 
     </data>

@@ -1,43 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
+        <!-- List View -->
         <record id="view_hr_hospital_doctor_list" model="ir.ui.view">
             <field name="name">hr.hospital.doctor.list</field>
             <field name="model">hr.hospital.doctor</field>
             <field name="arch" type="xml">
-                <list string="Лікарі">
+                <list string="Doctors">
                     <field name="name"/>
                     <field name="specialization"/>
                     <field name="category_id"/>
-                    <field name="is_intern" string="Інтерн"/>
+                    <field name="is_intern" string="Intern"/>
                     <field name="mentor_id"
-                        invisible="not is_intern"
-                        required="is_intern"/>
+                           invisible="not is_intern"
+                           optional="show"/>
                 </list>
             </field>
         </record>
 
+        <!-- Form View -->
         <record id="view_hr_hospital_doctor_form" model="ir.ui.view">
             <field name="name">hr.hospital.doctor.form</field>
             <field name="model">hr.hospital.doctor</field>
             <field name="arch" type="xml">
-                <form string="Лікар">
+                <form string="Doctor">
                     <sheet>
-
                         <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
 
                         <div class="oe_title">
-                            <h1><field name="name" placeholder="ПІБ Лікаря"/></h1>
+                            <label for="name" string="Doctor Name"/>
+                            <h1><field name="name" placeholder="e.g. John Doe"/></h1>
                         </div>
 
                         <group>
-                            <group string="Основна інформація">
-                                <field name="name"/>
+                            <group string="Professional Information" name="main_info">
                                 <field name="specialization"/>
-                                <field name="category_id"/>
-                                <field name="user_id"/>
+                                <field name="category_id" options="{'no_create': True}"/>
+                                <field name="user_id" options="{'no_create': True}"/>
                             </group>
-                            <group string="Медичні дані">
+                            <group string="Personal Data" name="medical_data">
                                 <field name="gender"/>
                                 <field name="birthday"/>
                                 <field name="age"/>
@@ -45,40 +47,40 @@
                             </group>
                         </group>
 
-                        <group string="Статус та наставництво">
-                            <field name="is_intern"/>
+                        <group string="Mentorship Status" name="mentorship">
+                            <field name="is_intern" widget="boolean_toggle"/>
                             <field name="mentor_id"
                                    invisible="not is_intern"
                                    required="is_intern"
-                                   domain="[('is_intern', '=', False), ('id', '!=', id)]"/>
+                                   domain="[('is_intern', '=', False), ('id', '!=', id)]"
+                                   options="{'no_create': True}"/>
                         </group>
 
                         <notebook>
-                        <page string="Інтерни" name="page_interns" invisible="is_intern">
-                            <field name="intern_ids" mode="kanban" readonly="1">
-                                <kanban>
-                                    <templates>
-                                        <t t-name="card">
-                                            <div class="d-flex">
-                                            <div class="me-3">
-                                                <field name="image_128" widget="image" class="o_image_64_max" options="{'zoom': true}"/>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                            <div class="fw-bold fs-5">
-                                                <field name="name"/>
-                                            </div>
-                                            <div class="text-muted">
-                                                <field name="specialization"/>
-                                            </div>
-                                            </div>
-                                            </div>
-                                        </t>
-                                    </templates>
-                                </kanban>
-                            </field>
-                        </page>
+                            <page string="Interns List" name="page_interns" invisible="is_intern">
+                                <field name="intern_ids" mode="kanban" readonly="1">
+                                    <kanban>
+                                        <templates>
+                                            <t t-name="card">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        <field name="image_128" widget="image" class="o_image_64_max" options="{'zoom': true}"/>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold fs-5">
+                                                            <field name="name"/>
+                                                        </div>
+                                                        <div class="text-muted">
+                                                            <field name="specialization"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
                         </notebook>
-
                     </sheet>
                 </form>
             </field>
@@ -88,68 +90,106 @@
             <field name="name">hr.hospital.doctor.search</field>
             <field name="model">hr.hospital.doctor</field>
             <field name="arch" type="xml">
-            <search string="Пошук лікарів">
+            <search string="Search Doctors">
                 <field name="name"/>
                 <field name="specialization"/>
                 <field name="category_id"/>
 
                 <separator/>
 
-                <filter string="Інтерни" name="filter_interns" domain="[('is_intern', '=', True)]"/>
-                <filter string="Ментори" name="filter_mentors" domain="[('is_intern', '=', False)]"/>
+                <filter string="Interns" name="filter_interns" domain="[('is_intern', '=', True)]"/>
+                <filter string="Mentors" name="filter_mentors" domain="[('is_intern', '=', False)]"/>
 
                 <separator/>
 
                 <group>
-                    <filter string="Спеціалізація" name="group_by_specialization" context="{'group_by': 'specialization'}"/>
-                    <filter string="Категорія" name="group_by_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Specialization" name="group_by_specialization" context="{'group_by': 'specialization'}"/>
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category_id'}"/>
                 </group>
             </search>
             </field>
         </record>
 
+        <!-- Kanban View -->
         <record id="view_hr_hospital_doctor_kanban" model="ir.ui.view">
-            <field name="name">hr.hospital.doctor.kanban</field>
-            <field name="model">hr.hospital.doctor</field>
-            <field name="arch" type="xml">
-            <kanban default_group_by="specialization" sample="1">
-                <field name="id"/>
-                <field name="name"/>
-                <field name="specialization"/>
-                <field name="image_128"/>
-                <templates>
+    <field name="name">hr.hospital.doctor.kanban</field>
+    <field name="model">hr.hospital.doctor</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="specialization" sample="1" class="o_kanban_mobile">
+            <field name="id"/>
+            <field name="name"/>
+            <field name="image_128"/>
+            <field name="is_intern"/> <!-- Потрібно для логіки -->
+            <field name="intern_ids"/> <!-- Потрібно для списку інтернів -->
+
+            <templates>
                 <t t-name="card">
-                    <div class="oe_kanban_global_click d-flex align-items-center">
-                        <div class="me-3">
-                            <field name="image_128" widget="image" class="o_image_64_max"/>
+                    <div class="oe_kanban_global_click d-flex align-items-start p-2">
+
+                        <!-- Dropdown Menu (Submenu) -->
+                        <div class="o_dropdown_kanban dropdown">
+                            <a class="dropdown-toggle btn" data-bs-toggle="dropdown" href="#" role="button">
+                                <span class="fa fa-ellipsis-v"/>
+                            </a>
+                            <div class="dropdown-menu" role="menu">
+                                <t t-if="widget.editable"><a type="edit" class="dropdown-item">Edit</a></t>
+                                <t t-if="widget.deletable"><a type="delete" class="dropdown-item">Delete</a></t>
+                            </div>
                         </div>
-                        <div class="flex-grow-1">
-                            <strong class="o_kanban_record_title"><field name="name"/></strong>
-                            <div class="text-muted"><field name="specialization"/></div>
-                            <button name="action_create_appointment"
-                                    type="object"
-                                    class="btn btn-primary btn-sm mt-2">
-                                    Записати пацієнта
-                            </button>
+
+                        <div class="o_kanban_image me-3">
+                            <field name="image_128" widget="image" class="o_image_64_max rounded"/>
+                        </div>
+
+                        <div class="oe_kanban_details d-flex flex-column flex-grow-1">
+                            <strong class="o_kanban_record_title fs-5"><field name="name"/></strong>
+                            <span class="text-muted">
+                                <field name="specialization"/>
+                            </span>
+
+                            <!-- Interns List (only if doctor is NOT an intern, meaning a potential mentor) -->
+                            <t t-if="!record.is_intern.raw_value and record.intern_ids.raw_value.length > 0">
+                                <div class="mt-2 p-1 bg-light rounded border border-info" style="font-size: 0.85rem;">
+                                    <div class="fw-bold text-info border-bottom mb-1">Interns:</div>
+                                    <field name="intern_ids" widget="many2many_tags"/>
+                                </div>
+                            </t>
+
+                            <!-- Control Buttons -->
+                            <div class="mt-auto pt-2 d-flex justify-content-between align-items-center">
+                                <button name="action_create_appointment"
+                                        type="object"
+                                        class="btn btn-sm btn-primary">
+                                    <i class="fa fa-plus me-1"/>
+                                    Visit
+                                </button>
+                                <!-- Можна додати іншу кнопку керування за потреби -->
+                            </div>
                         </div>
                     </div>
                 </t>
-                </templates>
-            </kanban>
+            </templates>
+        </kanban>
+    </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_hr_hospital_doctor" model="ir.actions.act_window">
+            <field name="name">Doctors</field>
+            <field name="res_model">hr.hospital.doctor</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add a new doctor to your medical staff.
+                </p>
             </field>
         </record>
 
-        <record id="action_hr_hospital_doctor" model="ir.actions.act_window">
-            <field name="name">Лікарі</field>
-            <field name="res_model">hr.hospital.doctor</field>
-            <field name="view_mode">kanban,list,form</field>
-        </record>
-
+        <!-- Menu Item -->
         <menuitem id="menu_hr_hospital_doctor"
-          name="Doctors"
-          parent="hr_hospital.menu_hr_hospital_operations"
-          action="action_hr_hospital_doctor"
-          sequence="20"/>
+                  name="Doctors"
+                  parent="hr_hospital.menu_hr_hospital_operations"
+                  action="action_hr_hospital_doctor"
+                  sequence="20"/>
     </data>
 </odoo>
-

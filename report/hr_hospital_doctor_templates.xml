@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_doctor_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- 1.1 -->
+                <t t-call="web.external_layout">
+                    <div class="page" style="page-break-after: always;">
+                        <div class="oe_structure"/>
+
+                        <!-- 1.2 -->
+                        <div class="text-center mt-4">
+                            <h2>
+                                <span t-field="o.name"/>
+                            </h2>
+                            <h4>specialization:
+                                <span t-field="o.specialization"/>
+                            </h4>
+                        </div>
+
+                        <!-- 1.3 -->
+                        <div class="mt-4">
+                            <h3 style="border-bottom: 1px solid #ccc;">Visit History</h3>
+                            <table class="table table-sm o_main_table mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Patient</th>
+                                        <th>Diagnosis</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sorting visits desc -->
+                                    <t t-foreach="o.visit_ids.sorted(key=lambda v: v.visit_date or datetime.datetime.min, reverse=True)" t-as="visit">
+                                        <tr>
+                                            <td>
+                                                <span t-field="visit.visit_date"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="visit.patient_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="visit.disease_id"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!--1.4-->
+                        <div class="mt-4">
+                            <h3>Patient List</h3>
+                            <table class="table table-bordered o_main_table">
+                                <thead class="bg-light text-center">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Gender</th>
+                                        <th>Date of Birth</th>
+                                        <th>Phone</th>
+                                        <th>Last Visit Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.visit_ids.mapped('patient_id')" t-as="patient">
+                                        <tr>
+                                            <td>
+                                                <span t-field="patient.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="patient.gender"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="patient.birthday"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="patient.phone"/>
+                                            </td>
+
+                                            <t t-set="last_visit"
+                                               t-value="o.visit_ids.filtered(lambda v: v.patient_id == patient).sorted(key=lambda v: v.visit_date, reverse=True)[0]"/>
+
+                                            <td class="text-center" t-attf-style="background-color: #{
+                                                'yellow' if last_visit.state == 'planned' else
+                                                '#28a745' if last_visit.state == 'completed' else
+                                                '#dc3545' if last_visit.state == 'cancelled' else 'white'
+                                                   }; color: #{'white' if last_visit.state in ['completed', 'cancelled'] else 'black'}; font-weight: bold;">
+                                                <span t-field="last_visit.state"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <!--1.5-->
+                    <div class="footer" style="border-top: 1px solid #ccc; font-size: 11px;">
+                        <div class="row mt-2">
+                            <div class="col-6 text-start">
+                                <strong>Printed on:</strong>
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>City:</strong>
+                                <span t-field="res_company.city"/>
+                            </div>
+                        </div>
+                        <div class="text-center text-muted">
+                            Page:
+                            <span class="page"/>
+                            /
+                            <span class="topage"/>
+                        </div>
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,86 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
+        <!-- List View -->
         <record id="view_hr_hospital_patient_list" model="ir.ui.view">
             <field name="name">hr.hospital.patient.list</field>
             <field name="model">hr.hospital.patient</field>
             <field name="arch" type="xml">
-                <list string="Пацієнти">
+                <list string="Patients">
                     <field name="name"/>
                     <field name="birthday"/>
                     <field name="age"/>
                     <field name="personal_doctor_id"/>
-                    <field name="insurance_number"/>
+                    <field name="insurance_number" optional="hide"/>
                 </list>
             </field>
         </record>
 
+        <!-- Form View -->
         <record id="view_hr_hospital_patient_form" model="ir.ui.view">
             <field name="name">hr.hospital.patient.form</field>
             <field name="model">hr.hospital.patient</field>
             <field name="arch" type="xml">
-                <form string="Пацієнт">
-
+                <form string="Patient">
                     <header>
                         <button name="action_create_new_visit"
-                            string="Записати до лікаря"
-                            type="object"
-                            class="oe_highlight"/>
+                                string="Schedule Visit"
+                                type="object"
+                                class="oe_highlight"
+                                help="Click to create a new appointment for this patient"/>
                     </header>
-
                     <sheet>
-
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_patient_visits"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-calendar">
-                                <field name="visit_count" string="Візити" widget="statinfo"/>
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-calendar">
+                                <field name="visit_count" string="Visits" widget="statinfo"/>
                             </button>
                         </div>
 
                         <div class="oe_title">
+                            <label for="name" string="Patient Name"/>
                             <h1>
-                                <field name="name" placeholder="ПІБ Пацієнта"/>
+                                <field name="name" placeholder="e.g. John Doe"/>
                             </h1>
                         </div>
                         <group>
-                            <group string="Особисті дані">
+                            <group string="Personal Data" name="personal_details">
                                 <field name="gender"/>
                                 <field name="birthday"/>
                                 <field name="age"/>
                                 <field name="blood_type"/>
                                 <field name="phone" widget="phone"/>
                             </group>
-                            <group string="Медична інформація">
-                                <field name="personal_doctor_id"/>
+                            <group string="Medical Information" name="medical_info">
+                                <field name="personal_doctor_id" options="{'no_create': True}"/>
                                 <field name="insurance_number"/>
                             </group>
                         </group>
 
                         <notebook>
-
-                            <page string="Історія персональних лікарів" name="doctor_history">
+                            <page string="Doctor History" name="doctor_history">
                                 <field name="doctor_history_ids">
                                     <list editable="bottom" create="false" edit="false">
                                         <field name="doctor_id"/>
-                                        <field name="appointment_date" string="Дата призначення"/>
+                                        <field name="appointment_date" string="Assignment Date"/>
                                     </list>
                                 </field>
                             </page>
-
-                            <page string="Історія діагнозів" name="diagnosis_history">
+                            <page string="Medical History" name="diagnosis_history">
                                 <field name="visit_ids">
-                                    <list decoration-info="state == 'planned'" decoration-success="state == 'done'">
+                                    <list decoration-info="state == 'planned'"
+                                          decoration-success="state == 'done'"
+                                          no_open="1">
                                         <field name="visit_date"/>
                                         <field name="personal_doctor_id"/>
-                                        <field name="disease_id" string="Діагноз"/>
+                                        <field name="disease_id" string="Diagnosis"/>
                                         <field name="summary"/>
-                                        <field name="state" widget="badge"/>
+                                        <field name="state"
+                                               widget="badge"
+                                               decoration-info="state == 'planned'"
+                                               decoration-success="state == 'done'"/>
                                     </list>
                                 </field>
                             </page>
-
                         </notebook>
                     </sheet>
                 </form>
@@ -91,34 +95,40 @@
             <field name="name">hr.hospital.patient.search</field>
             <field name="model">hr.hospital.patient</field>
             <field name="arch" type="xml">
-            <search>
-                <field name="name" string="Пацієнт" filter_domain="['|', ('name', 'ilike', self), ('insurance_number', 'ilike', self)]"/>
-                <field name="phone" string="Телефон"/>
+            <search string="Search Patients">
+                <field name="name" string="Patient" filter_domain="['|', ('name', 'ilike', self), ('insurance_number', 'ilike', self)]"/>
+                <field name="phone" string="Phone"/>
 
                 <separator/>
 
-                <filter string="Чоловіки" name="gender_male" domain="[('gender', '=', 'male')]"/>
-                <filter string="Жінки" name="gender_female" domain="[('gender', '=', 'female')]"/>
+                <filter string="Men" name="gender_man" domain="[('gender', '=', 'man')]"/>
+                <filter string="Women" name="gender_woman" domain="[('gender', '=', 'woman')]"/>
 
                 <group>
-                    <filter string="Стать" name="group_by_gender" context="{'group_by': 'gender'}"/>
+                    <filter string="Gender" name="group_by_gender" context="{'group_by': 'gender'}"/>
                 </group>
             </search>
             </field>
         </record>
 
-
+        <!-- Action -->
         <record id="action_hr_hospital_patient" model="ir.actions.act_window">
-            <field name="name">Пацієнти</field>
+            <field name="name">Patients</field>
             <field name="res_model">hr.hospital.patient</field>
             <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Register your first patient!
+                </p>
+            </field>
         </record>
 
+        <!-- Menu Item -->
         <menuitem id="menu_hr_hospital_patient"
-          name="Patients"
-          parent="hr_hospital.menu_hr_hospital_operations"
-          action="action_hr_hospital_patient"
-          sequence="10"/>
+                  name="Patients"
+                  parent="hr_hospital.menu_hr_hospital_operations"
+                  action="action_hr_hospital_patient"
+                  sequence="10"/>
 
     </data>
 </odoo>
